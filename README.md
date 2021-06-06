@@ -14,7 +14,3 @@ npm run start:dev
 npm run build
 npm run start
 ```
-
-# Docker
-
-TODO
