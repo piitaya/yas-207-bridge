@@ -1,0 +1,27 @@
+{
+  "name": "yas-207-bridge",
+  "version": "0.0.1",
+  "description": "Bluetooth to HTTP Bridge for Yamaha YAS 207 sound bar",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "start:dev": "nodemon",
+    "prebuild": "npm run clean",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js"
+  },
+  "author": "Paul Bottein",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^3.17.0",
+    "nodemon": "^2.0.7",
+    "serialport": "^9.1.0",
+    "ts-node": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^15.6.2",
+    "@types/serialport": "^8.0.1",
+    "fastify-tsconfig": "^1.0.1",
+    "typescript": "^4.3.2"
+  }
+}
