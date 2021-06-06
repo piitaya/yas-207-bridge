@@ -1,4 +1,4 @@
-# Yas 207 HTTP Bridge
+# Yas 207 Bluetooth to HTTP Bridge
 
 ## Description
 
