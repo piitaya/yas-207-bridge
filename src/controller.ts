@@ -1,10 +1,12 @@
 import { FastifyInstance } from "fastify";
 import Yas207Bluetooth from "./yas207/yas207-bluetooth";
 
-const YAS_207_PATH = "/dev/tty.YAS-207Yamaha-SPPDev";
+const DEVICE_PATH = process.env.DEVICE_PATH;
 
 const controller = async (fastify: FastifyInstance) => {
-  const yas207 = new Yas207Bluetooth(YAS_207_PATH);
+  if (!DEVICE_PATH) throw new Error(`No device path set`);
+
+  const yas207 = new Yas207Bluetooth(DEVICE_PATH);
 
   fastify.get("/status", async (_request, reply) => {
     try {
