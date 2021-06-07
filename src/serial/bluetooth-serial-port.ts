@@ -37,19 +37,6 @@ class BluetoothSerialPort extends events {
     return this.serialPort.isOpen;
   }
 
-  private getPortStatus() {
-    return new Promise<{
-      cts: boolean;
-      dsr: boolean;
-      dcd: boolean;
-    }>((res, rej) => {
-      this.serialPort.get((err, status) => {
-        if (err) rej(err);
-        else res(status);
-      });
-    });
-  }
-
   write(buffer: Buffer) {
     return new Promise<number>((res, rej) => {
       this.serialPort.write(buffer, (err, bytesWritten) => {
@@ -60,14 +47,7 @@ class BluetoothSerialPort extends events {
   }
 
   async ensureConnection() {
-    // Open if not open
     if (!this.isOpen()) {
-      await this.open();
-    }
-    const status = await this.getPortStatus();
-    // If no signal, close and re-open to fix the connection
-    if (!status.dcd) {
-      await this.close();
       await this.open();
     }
   }
