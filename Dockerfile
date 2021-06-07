@@ -1,39 +1,41 @@
 # First stage, build dist folder with nest and prisma cli
-FROM node:alpine as builder
+FROM node:15.11.0-alpine AS builder
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN apk --no-cache add --virtual native-deps \
-    g++ gcc libgcc libstdc++ linux-headers make python3 && \
-    npm install --quiet node-gyp -g
+RUN apk --no-cache add \
+    coreutils \	
+    jq \
+    linux-headers \
+    alpine-sdk \	
+    python
 
 RUN npm install
 
 COPY . .
 
-RUN npm run build
+RUN npm run build && npm remove $(cat package.json | jq -r '.devDependencies | keys | join(" ")')
 
 # Second stage (to reduce the final image size), pass a clean dist folder
-FROM node:alpine
-
-WORKDIR /usr/src/app
+FROM node:15.11.0-alpine
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
-COPY package*.json ./
+RUN apk add --no-cache \	
+    libstdc++ \
+    openssl \
+    libgcc \	
+    libusb \	
+    tzdata \	
+    eudev	
 
-RUN apk --no-cache add --virtual native-deps \
-    g++ gcc libgcc libstdc++ linux-headers make python3 && \
-    npm install --quiet node-gyp -g
+COPY --from=builder /usr/src/app /usr/src/app
 
-RUN npm ci --production && npm cache clean --force
+WORKDIR /usr/src/app
 
-COPY --from=builder /usr/src/app/dist ./dist
-
-ENV PORT 9207
-EXPOSE $PORT
+EXPOSE 9207
 
 CMD ["node", "dist/index"]
