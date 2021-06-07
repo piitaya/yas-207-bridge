@@ -13,6 +13,12 @@ class BluetoothSerialPort extends events {
     this.serialPort.on("data", (buffer: Buffer) => {
       this.emit("data", buffer);
     });
+    this.serialPort.on("close", () => {
+      this.emit("close");
+    });
+    this.serialPort.on("open", () => {
+      this.emit("open");
+    });
   }
 
   open() {

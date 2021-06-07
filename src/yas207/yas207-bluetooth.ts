@@ -19,6 +19,9 @@ class Yas207Bluetooth {
 
   getStatus(): Promise<Status> {
     return new Promise<Status>(async (res, rej) => {
+      this.bluetooth.once("close", () => {
+        rej(new Error("Connection is closed"));
+      })
       this.bluetooth.once("data", (buffer: Buffer) => {
         const status = Yas207Encoder.decode(buffer.toString("hex"));
         res(status);
